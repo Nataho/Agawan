@@ -1,0 +1,20 @@
+[gd_scene format=3 uid="uid://guwqj6cxai35"]
+
+[ext_resource type="Script" uid="uid://djsl4lmeo0awn" path="res://Scenes/Test/test_scene.gd" id="1_uvmkt"]
+
+[node name="TestScene" type="Control" unique_id=2326776]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_uvmkt")
+
+[node name="TextureRect" type="TextureRect" parent="." unique_id=2021776391]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2

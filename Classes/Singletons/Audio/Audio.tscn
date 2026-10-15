@@ -1,0 +1,8 @@
+[gd_scene format=3 uid="uid://dkafy10exwjv1"]
+
+[ext_resource type="Script" uid="uid://djm3igytrkjk5" path="res://Classes/Singletons/Audio/Audio.gd" id="1_psp4j"]
+
+[node name="Audio" type="Node" unique_id=219746312]
+script = ExtResource("1_psp4j")
+
+[node name="MusicStream" type="AudioStreamPlayer" parent="." unique_id=1821777195]

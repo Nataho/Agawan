@@ -1,0 +1,81 @@
+[gd_scene format=3 uid="uid://cnoruq8j06bim"]
+
+[ext_resource type="Script" uid="uid://lhhine8eitgs" path="res://Classes/Singletons/Segue/Segue.gd" id="1_joovc"]
+
+[sub_resource type="Animation" id="Animation_1l3rs"]
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Control/ColorRect:color")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(0.3922923),
+"update": 0,
+"values": [Color(0, 0, 0, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_joovc"]
+resource_name = "dissolve"
+length = 0.5
+step = 0.5
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Control/ColorRect:color")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(0.19614626, 0.19614626),
+"update": 0,
+"values": [Color(0, 0, 0, 0), Color(0, 0, 0, 1)]
+}
+
+[sub_resource type="Animation" id="Animation_dkgby"]
+resource_name = "dissolve"
+length = 0.5
+step = 0.5
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Control/ColorRect:color")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(0.19614626, 0.19614626),
+"update": 0,
+"values": [Color(0, 0, 0, 1), Color(0, 0, 0, 0)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_1l3rs"]
+_data = {
+&"RESET": SubResource("Animation_1l3rs"),
+&"dissolve_in": SubResource("Animation_joovc"),
+&"dissolve_out": SubResource("Animation_dkgby")
+}
+
+[node name="Segue" type="CanvasLayer" unique_id=1618606567]
+script = ExtResource("1_joovc")
+
+[node name="Control" type="Control" parent="." unique_id=2020189423]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ColorRect" type="ColorRect" parent="Control" unique_id=449488761]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0)
+
+[node name="anim" type="AnimationPlayer" parent="." unique_id=2133445325]
+libraries/ = SubResource("AnimationLibrary_1l3rs")

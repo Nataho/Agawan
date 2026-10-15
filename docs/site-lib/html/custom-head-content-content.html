@@ -1,0 +1,36 @@
+<!-- 1. Import Adwaita Mono Web Font from CDN -->
+<style>
+  @import url('https://cdn.jsdelivr.net/npm/@fontsource/adwaita-mono/400.css');
+  @import url('https://cdn.jsdelivr.net/npm/@fontsource/adwaita-mono/700.css');
+
+  /* Apply Adwaita Mono to body text, code blocks, and editor elements */
+  body, 
+  .markdown-rendered, 
+  code, 
+  pre, 
+  .cm-codeblock, 
+  .cm-editor {
+    font-family: 'Adwaita Mono', monospace !important;
+  }
+</style>
+
+<!-- 2. Copy Button JavaScript Fix -->
+<script>
+document.addEventListener('click', (e) => {
+  const button = e.target.closest('.copy-code-button');
+  if (!button) return;
+
+  const container = button.closest('pre') || button.parentElement;
+  const code = container ? container.querySelector('code') : null;
+
+  if (code) {
+    navigator.clipboard.writeText(code.innerText).then(() => {
+      const originalText = button.innerText;
+      button.innerText = 'Copied!';
+      setTimeout(() => {
+        button.innerText = originalText;
+      }, 1500);
+    }).catch(err => console.error('Failed to copy text: ', err));
+  }
+});
+</script>
