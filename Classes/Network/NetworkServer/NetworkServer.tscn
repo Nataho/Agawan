@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://botfqsu3u6w2f"]
+
+[ext_resource type="Script" uid="uid://cs2e5jlghhvb8" path="res://Classes/Network/NetworkServer/NetworkServer.gd" id="1_egj1d"]
+
+[node name="SocketServer" type="Node" unique_id=741296134]
+script = ExtResource("1_egj1d")

@@ -1,0 +1,212 @@
+[gd_scene format=3 uid="uid://b227i6ldi74lr"]
+
+[ext_resource type="Script" uid="uid://bi0a6bi35yrai" path="res://Scenes/Test/NetworkTest.gd" id="1_rc4xu"]
+
+[node name="NetworkTest" type="Control" unique_id=1097315479]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_rc4xu")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="." unique_id=1163030631]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 20
+
+[node name="ClientPanel" type="PanelContainer" parent="HBoxContainer" unique_id=3849923]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="MarginContainer" type="MarginContainer" parent="HBoxContainer/ClientPanel" unique_id=1856108715]
+layout_mode = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 16
+
+[node name="VBox" type="VBoxContainer" parent="HBoxContainer/ClientPanel/MarginContainer" unique_id=381675354]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Title" type="Label" parent="HBoxContainer/ClientPanel/MarginContainer/VBox" unique_id=179791008]
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "Client"
+
+[node name="ClientStatusLabel" type="Label" parent="HBoxContainer/ClientPanel/MarginContainer/VBox" unique_id=1911827200]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Status: Disconnected"
+
+[node name="DirectConnectBtn" type="Button" parent="HBoxContainer/ClientPanel/MarginContainer/VBox" unique_id=1136493717]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Direct Connect to Client-Server (127.0.0.1:8080)"
+
+[node name="HSeparator" type="HSeparator" parent="HBoxContainer/ClientPanel/MarginContainer/VBox" unique_id=608338554]
+layout_mode = 2
+
+[node name="ServerConfigLabel" type="Label" parent="HBoxContainer/ClientPanel/MarginContainer/VBox" unique_id=247513721]
+layout_mode = 2
+text = "Connect to External / Python Server:"
+
+[node name="IPContainer" type="HBoxContainer" parent="HBoxContainer/ClientPanel/MarginContainer/VBox" unique_id=397594587]
+layout_mode = 2
+
+[node name="IPLabel" type="Label" parent="HBoxContainer/ClientPanel/MarginContainer/VBox/IPContainer" unique_id=1508714516]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+text = "IP:"
+
+[node name="ClientIPEdit" type="LineEdit" parent="HBoxContainer/ClientPanel/MarginContainer/VBox/IPContainer" unique_id=854374350]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "127.0.0.1"
+placeholder_text = "e.g. 127.0.0.1"
+
+[node name="PortContainer" type="HBoxContainer" parent="HBoxContainer/ClientPanel/MarginContainer/VBox" unique_id=579095489]
+layout_mode = 2
+
+[node name="PortLabel" type="Label" parent="HBoxContainer/ClientPanel/MarginContainer/VBox/PortContainer" unique_id=274377]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+text = "Port:"
+
+[node name="ClientPortEdit" type="LineEdit" parent="HBoxContainer/ClientPanel/MarginContainer/VBox/PortContainer" unique_id=658846845]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "8080"
+placeholder_text = "e.g. 8080"
+
+[node name="ClientStartBtn" type="Button" parent="HBoxContainer/ClientPanel/MarginContainer/VBox" unique_id=864068762]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Connect Client"
+
+[node name="ClientDisconnectBtn" type="Button" parent="HBoxContainer/ClientPanel/MarginContainer/VBox" unique_id=248710514]
+unique_name_in_owner = true
+layout_mode = 2
+disabled = true
+text = "Disconnect Client"
+
+[node name="HSeparator2" type="HSeparator" parent="HBoxContainer/ClientPanel/MarginContainer/VBox" unique_id=897252859]
+layout_mode = 2
+
+[node name="ClientChatContainer" type="HBoxContainer" parent="HBoxContainer/ClientPanel/MarginContainer/VBox" unique_id=1045251546]
+layout_mode = 2
+
+[node name="ClientChatInput" type="LineEdit" parent="HBoxContainer/ClientPanel/MarginContainer/VBox/ClientChatContainer" unique_id=1174604049]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "Type message..."
+
+[node name="ClientChatSendBtn" type="Button" parent="HBoxContainer/ClientPanel/MarginContainer/VBox/ClientChatContainer" unique_id=261775524]
+unique_name_in_owner = true
+layout_mode = 2
+disabled = true
+text = "Send Chat"
+
+[node name="SendPingBtn" type="Button" parent="HBoxContainer/ClientPanel/MarginContainer/VBox" unique_id=2048644092]
+unique_name_in_owner = true
+layout_mode = 2
+disabled = true
+text = "Send 'ping' Signal to Server"
+
+[node name="ClientLogLabel" type="Label" parent="HBoxContainer/ClientPanel/MarginContainer/VBox" unique_id=1477901367]
+layout_mode = 2
+text = "Client Log:"
+
+[node name="ClientLog" type="RichTextLabel" parent="HBoxContainer/ClientPanel/MarginContainer/VBox" unique_id=1979920312]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+scroll_following = true
+
+[node name="ServerPanel" type="PanelContainer" parent="HBoxContainer" unique_id=1571311249]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="MarginContainer" type="MarginContainer" parent="HBoxContainer/ServerPanel" unique_id=525712687]
+layout_mode = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 16
+
+[node name="VBox" type="VBoxContainer" parent="HBoxContainer/ServerPanel/MarginContainer" unique_id=950681966]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Title" type="Label" parent="HBoxContainer/ServerPanel/MarginContainer/VBox" unique_id=1463354785]
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "Server"
+
+[node name="ServerStatusLabel" type="Label" parent="HBoxContainer/ServerPanel/MarginContainer/VBox" unique_id=1545072011]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Status: Stopped"
+
+[node name="PortContainer" type="HBoxContainer" parent="HBoxContainer/ServerPanel/MarginContainer/VBox" unique_id=354231887]
+layout_mode = 2
+
+[node name="PortLabel" type="Label" parent="HBoxContainer/ServerPanel/MarginContainer/VBox/PortContainer" unique_id=2004973390]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+text = "Port:"
+
+[node name="ServerPortEdit" type="LineEdit" parent="HBoxContainer/ServerPanel/MarginContainer/VBox/PortContainer" unique_id=2132249279]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "8080"
+placeholder_text = "e.g. 8080"
+
+[node name="ServerStartBtn" type="Button" parent="HBoxContainer/ServerPanel/MarginContainer/VBox" unique_id=443415853]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Start Server"
+
+[node name="ServerStopBtn" type="Button" parent="HBoxContainer/ServerPanel/MarginContainer/VBox" unique_id=1831007585]
+unique_name_in_owner = true
+layout_mode = 2
+disabled = true
+text = "Stop Server"
+
+[node name="HSeparator" type="HSeparator" parent="HBoxContainer/ServerPanel/MarginContainer/VBox" unique_id=644715400]
+layout_mode = 2
+
+[node name="ServerChatContainer" type="HBoxContainer" parent="HBoxContainer/ServerPanel/MarginContainer/VBox" unique_id=704703906]
+layout_mode = 2
+
+[node name="ServerChatInput" type="LineEdit" parent="HBoxContainer/ServerPanel/MarginContainer/VBox/ServerChatContainer" unique_id=162794750]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "Server broadcast message..."
+
+[node name="ServerChatSendBtn" type="Button" parent="HBoxContainer/ServerPanel/MarginContainer/VBox/ServerChatContainer" unique_id=594780058]
+unique_name_in_owner = true
+layout_mode = 2
+disabled = true
+text = "Broadcast"
+
+[node name="ServerLogLabel" type="Label" parent="HBoxContainer/ServerPanel/MarginContainer/VBox" unique_id=1134341387]
+layout_mode = 2
+text = "Server Log:"
+
+[node name="ServerLog" type="RichTextLabel" parent="HBoxContainer/ServerPanel/MarginContainer/VBox" unique_id=1137105980]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+scroll_following = true

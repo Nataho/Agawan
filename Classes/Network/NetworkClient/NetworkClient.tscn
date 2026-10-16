@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://lljtc8ryt3uh"]
+
+[ext_resource type="Script" uid="uid://bqovvfpf54oxw" path="res://Classes/Network/NetworkClient/NetworkClient.gd" id="1_rolpv"]
+
+[node name="SocketClient" type="Node" unique_id=20604411]
+script = ExtResource("1_rolpv")
