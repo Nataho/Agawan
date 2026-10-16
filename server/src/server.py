@@ -94,6 +94,22 @@ class AgawanServer:
         self.conns[client_id] = ws
         peer = getattr(ws, "remote_address", "?")
         log.info("client %d connected from %s", client_id, peer)
+        # Auto-register as player so plain Direct Connect (no explicit
+        # join from NetworkTest.tscn) still shows in list/state.
+        # _on_join stays idempotent: explicit join just updates profile.
+        player = self.state.add_player(client_id, name=f"Player{client_id}")
+        await self._send(ws, "welcome", {
+            "client_id": client_id,
+            "server_time": server_now(),
+            "message": f"Welcome {player.name} [{player.team}/{player.role}]",
+        })
+        await self._broadcast("player_joined", {
+            "client_id": client_id,
+            "name": player.name,
+            "team": player.team,
+            "role": player.role,
+        }, exclude=client_id)
+        self._last_fingerprint = None  # force immediate state send
         try:
             async for message in ws:
                 await self.on_message(client_id, ws, message)
@@ -148,10 +164,19 @@ class AgawanServer:
         })
 
     async def _on_join(self, client_id: int, ws, raw: dict) -> None:
+        # Idempotent: handle() already auto-registered on socket connect,
+        # so explicit join just updates the profile (name/team/role).
         name = str(raw.get("name") or f"Player{client_id}")
-        team = str(raw.get("team") or ("red" if client_id % 2 else "blue"))
+        team = str(raw.get("team") or "red")
         role = str(raw.get("role") or "scavenger")
-        player = self.state.add_player(client_id, name=name, team=team, role=role)
+        existing = self.state.players.get(client_id)
+        if existing is not None:
+            existing.name = name
+            existing.team = team if team in config.VALID_TEAMS else existing.team
+            existing.role = role if role in config.VALID_ROLES else existing.role
+            player = existing
+        else:
+            player = self.state.add_player(client_id, name=name, team=team, role=role)
         await self._send(ws, "welcome", {
             "client_id": client_id,
             "server_time": server_now(),
