@@ -1,0 +1,4 @@
+# Python backend for Agawan — keep Godot-facing protocol in sync with
+# Classes/Network/NetworkClient/NetworkClient.gd and
+# Classes/Network/NetworkServer/NetworkServer.gd:
+#   {"signal_name": str, "raw_data": dict}
