@@ -190,10 +190,10 @@ class AgawanServer:
         try:
             data = json.loads(message)
         except (json.JSONDecodeError, TypeError):
-            await self._send(ws, "errorr", {"reason": "malformed JSON"})
+            await self._send(ws, "errorrr", {"reason": "malformed JSON"})
             return
         if not isinstance(data, dict) or "signal_name" not in data:
-            await self._send(ws, "errorr", {"reason": "missing signal_name"})
+            await self._send(ws, "errorrr", {"reason": "missing signal_name"})
             return
         name = str(data.get("signal_name", ""))
         raw = data.get("raw_data", {})
