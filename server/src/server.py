@@ -199,6 +199,10 @@ class AgawanServer:
         raw = data.get("raw_data", {})
         if not isinstance(raw, dict):
             raw = {}
+        # Uniform inbound visibility: log EVERY frame the moment it arrives,
+        # whatever its signal, so nobody wonders what reached the server.
+        log.info("signal received | signal: %s, data: %s | client %d",
+                 name, raw, client_id)
         method_name = self.HANDLERS.get(name)
         if method_name is None:
             # Frontend shipped a signal (e.g. attack sync) the server does
@@ -229,7 +233,6 @@ class AgawanServer:
         player = self.state.players.get(client_id)
         sender = str(raw.get("sender") or (player.name if player else f"Client {client_id}"))
         message = str(raw.get("message", ""))
-        log.info("chat | client %d sender='%s': %s", client_id, sender, message)
         # Option A: sender already sees local [You] in NetworkTest UI,
         # so exclude them from broadcast. Others still receive [sender]: msg.
         await self._broadcast("chat_message", {
