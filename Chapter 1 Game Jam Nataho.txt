@@ -1,0 +1,84 @@
+Chapter 1 - Game Jam
+Nataho
+
+Created the Audio and Segue singletons for everyone to use.
+Agawan
+
+Agawan is a fast-paced 3v3 / 4v4 top-down(subject to change) multiplayer arena title that transforms the traditional Visayan street game Tayukok (Agawan Base) into a high-stakes, competitive esports experience. The game fuses the core tagging and rescue mechanics of traditional street play with a circular-economy resource race and mechanical movement systems.
+Game Identity and Metadata
+
+Themes: Philippine Games and Sports & Circular Economy
+Genere: Top-Down(subject to change) Competitive Action / Team Tag Arena
+Platform: PC / Android (Gamepad and Keyboard/Mouse support)
+Match format: 3v3 or 4v4, best-of-3 sets (2-3 minutes per round)
+Visual Style: ???
+Core Movement & Mechanical Systems
+
+To eliminate camping and reward mechanical execution, player navigation is governed by active resource management and split-second evasion tools.
+Movement Controls and Dynamics
+
+Omnidirectional Sprint:
+
+    Consumes a 100-point Stamina Meter over 3.5 seconds of sustained sprinting.
+    Stamina regenerates rapidly only when walking or standing still. Complete depletion causes an "Exhaustion" state, locking sprint and dash for 1.2 seconds.
+
+Tactical Dash:
+
+    Consumes 35 stamina or uses 1 of 2 discrete dash charges on a short 4-second cooldown.
+    Grants Grants 0.18 seconds of invulnerability frames (I-frames). During an active dash, incoming tag hitboxes are nullified
+    Allows agile players to dodge through an aggressive chaser’s forward lunge, causing the attacker to miss, slide, and overshoot their momentum.
+
+Weight and Encumbrance Penalties:
+
+    Carrying scrap nodes or power batteries reduces baseline movement speed by 15% and accelerates sprint stamina drain by 25%
+    Runners cannot simply grab scrap and sprint home untouched; they require defensive screens, peelers, or coordinated lane handoffs.
+
+Tag Combat: The "Fresh Touch" Priority Engine:
+Tag mechanics rely entirely on the traditional Tayukok "freshness" rule, driven by server-authoritative timestamps to ensure competitive fairness.
+
+Base Step-Off -> Timestamp Locked -> Visual Aura Assigned -> Tag Combat
+
+    Tag Priority (Freshness):
+        Stepping outside the home base border locks a player's Exit Timestamp.
+        Any player who steps onto the field after an opponent gains Predator Advantage over that specific opponent.
+        If Player A leaves base at 0:10 and Player B leaves base at 0:12, Player B can tag and eliminate Player A on contact.
+
+    Visual Status Telegraphing
+        Predator Aura(Sharp/Hilighted):
+            indicates priority over target opponents within proximity
+        Prey Aura (Dim/Pulsing Warning):
+            Alerts the player that an active enemy on the field is fresher and poses an immediate capture threat.
+        Clash / Parity (Equal Timestamps):
+            If two opposing players exit within 0.25 seconds of each other, physical contact triggers an explosive knockback wave rather than an elimination, resetting both players' momentum.
+
+    Anti-Stall Duration:
+        Stepping off the base grants predatory priority for a maximum of 15 seconds. Once the timer expires, the aura decays to neutral status, forcing players to either retreat to touch their home boundary or risk being tagged by any active enemy.
+
+Capture, Jail & The "Kuryente" Chain Rescue
+
+    The Holding Cell:
+        Tagged players are teleported to the enemy’s containment grid adjacent to their base.
+    The Living Chain (Kuryente):
+        Captured teammates can physically link hands, forming a connected tether reaching out toward the neutral zone. Each additional prisoner lengthens the chain, bringing the rescue point closer to mid-lane.
+    The High-Stakes Breakout:
+        If an active teammate dashes past defenders and touches any segment of the prisoner chain without being tagged:
+        All imprisoned players are instantly liberated.
+        Rescued players receive a 2.5-second phase shield (invulnerability + bonus movespeed) to reposition back to neutral territory.
+
+Role Archetypes(Subject to change)
+Teams assemble rosters using three distinct player roles.
+Role 	Mobility Profile 	Core Responsibilities
+Scavenger (Runner) 	High base speed, large stamina pool, standard dash. 	Controls mid-lane scrap nodes, runs battery cores home, and executes rescue touches on the prisoner chain.
+Enforcer (Chaser) 	High dash acceleration, wider tag-hitbox cone, smaller stamina tank. 	ntercepts enemy runners, exploits freshness advantage to hunt harvesters, and zones the neutral zone.
+Anchor (Defender) 	Standard speed, defensive kinetic shockwave pulse on cooldown. 	Guards the home base perimeter from direct infiltrations, denies chain rescues, and locks down dropped scrap.
+
+Win Conditions and Esports Match Loop
+Rounds last between 2 and 3 minutes, driven by three definitive win conditions
+
+    Reactor Meltdown (Resource Starvation):
+        A team’s base Eco-Reactor naturally ticks downward. Failure to collect and deposit recycled batteries from the center lane causes the base core to hit 0%, ending the round in defeat.
+    Base Infiltration (Overload Tap)
+        A runner carrying an overcharged energy core successfully touches the enemy team's main reactor terminal.
+    Total Team Wipe (Prisoner Lockdown
+        All players of an opposing team are trapped in the holding cell simultaneously.
+
