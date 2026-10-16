@@ -66,3 +66,23 @@ def test_same_team_denied():
     s.lock_exit(3, now=12.0)
     r = s.resolve_tag(3, 1, now=13.0)
     assert r["result"] == "denied"
+
+
+def test_fingerprint_stable_when_idle():
+    s = make_state()
+    s.lock_exit(1, now=10.0)
+    fp1 = s.fingerprint(now=11.0)
+    fp2 = s.fingerprint(now=11.5)  # time moved, no game change
+    assert fp1 == fp2
+
+
+def test_fingerprint_changes_on_game_event():
+    s = make_state()
+    fp_empty = s.fingerprint(now=10.0)
+    s.lock_exit(1, now=10.0)
+    assert s.fingerprint(now=11.0) != fp_empty
+    s.lock_exit(2, now=12.0)
+    fp_before_tag = s.fingerprint(now=13.0)
+    s.resolve_tag(2, 1, now=13.0)
+    assert s.fingerprint(now=13.0) != fp_before_tag
+

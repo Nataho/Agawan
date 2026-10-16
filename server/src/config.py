@@ -27,6 +27,10 @@ ENCUMBRANCE_DRAIN_MULT: float = 1.25
 ROUND_SECONDS_MIN: int = 120
 ROUND_SECONDS_MAX: int = 180
 TICK_HZ: float = 20.0
+# Option A: change-driven state broadcast.
+# Active changes send immediately (up to TICK_HZ); idle sends 1Hz heartbeat.
+STATE_IDLE_HZ: float = 1.0
+STATE_ACTIVE_HZ: float = 20.0
 
 VALID_ROLES = ("scavenger", "enforcer", "anchor")
 VALID_TEAMS = ("red", "blue")

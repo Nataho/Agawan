@@ -117,6 +117,22 @@ class GameState:
                 "result": "denied", "reason": "target is fresher (prey)"}
 
     # -- snapshots ------------------------------------------------------
+    def fingerprint(self, now: float | None = None) -> tuple:
+        """Change key for dirty-check. Excludes server_time on purpose.
+
+        NOTE: when movement/reactor/chain fields are added to Player,
+        include them here or movement won't trigger state sends.
+        """
+        now = server_now() if now is None else now
+        items = []
+        for cid in sorted(self.players.keys()):
+            p = self.players[cid]
+            items.append((
+                p.client_id, p.name, p.team, p.role,
+                p.jailed, p.exit_time, self.aura(p.client_id, now),
+            ))
+        return tuple(items)
+
     def snapshot(self, now: float | None = None) -> dict:
         now = server_now() if now is None else now
         players = []

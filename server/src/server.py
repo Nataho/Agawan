@@ -32,6 +32,8 @@ class AgawanServer:
         self.conns: dict = {}
         self._next_id = 1
         self.started_at = server_now()
+        self._last_fingerprint = None
+        self._last_broadcast = 0.0
 
     async def _send(self, ws, signal_name: str, raw_data=None) -> None:
         try:
@@ -51,14 +53,38 @@ class AgawanServer:
         for cid in dead:
             self.conns.pop(cid, None)
 
+    async def broadcast_server_message(self, message: str, sender: str = "Server") -> None:
+        """Operator send: same as Godot NetworkTest _on_server_broadcast_chat."""
+        message = message.strip()
+        if not message:
+            return
+        log.info('[Server Broadcast]: %s', message)
+        await self._broadcast("chat_message", {
+            "sender": sender,
+            "message": message,
+            "time": time.strftime("%H:%M:%S"),
+        })
+
     async def _tick_loop(self) -> None:
-        interval = 1.0 / config.TICK_HZ
+        # Option A: send state immediately on change, else 1Hz heartbeat.
+        # Event handlers (join/exit/tag/chat) already broadcast their own
+        # signals, so gameplay stays instant - state is fallback/join sync.
+        active_interval = 1.0 / config.STATE_ACTIVE_HZ
+        idle_interval = 1.0 / config.STATE_IDLE_HZ
         while True:
-            await asyncio.sleep(interval)
+            await asyncio.sleep(active_interval)
             if not self.conns:
                 continue
             try:
-                await self._broadcast("state", self.state.snapshot())
+                now = server_now()
+                fp = self.state.fingerprint(now)
+                if fp != self._last_fingerprint:
+                    self._last_fingerprint = fp
+                    self._last_broadcast = now
+                    await self._broadcast("state", self.state.snapshot(now))
+                elif (now - self._last_broadcast) >= idle_interval:
+                    self._last_broadcast = now
+                    await self._broadcast("state", self.state.snapshot(now))
             except Exception as exc:
                 log.debug("tick broadcast failed: %s", exc)
 
@@ -159,9 +185,48 @@ class AgawanServer:
         await self._broadcast("tag_resolved", result)
 
 
+async def admin_console_loop(server: "AgawanServer") -> None:
+    """Operator console (stdin). Type: say <msg> | list | kick <id> | help."""
+    print("[ADMIN] type 'say <message>' to broadcast, 'list' for players, 'help' for commands", flush=True)
+    while True:
+        try:
+            line = await asyncio.to_thread(input, "[SERVER] ")
+        except (EOFError, KeyboardInterrupt):
+            break
+        line = line.strip()
+        if not line:
+            continue
+        low = line.lower()
+        if low == "help":
+            print("commands: say <msg> | list | kick <id> | count", flush=True)
+        elif low == "list" or low == "count":
+            snap = server.state.snapshot()
+            print(f"[ADMIN] {len(snap['players'])} player(s): {snap['players']}", flush=True)
+        elif low.startswith("say "):
+            await server.broadcast_server_message(line[4:])
+        elif low.startswith("kick "):
+            try:
+                tid = int(line.split()[1])
+            except (IndexError, ValueError):
+                print("usage: kick <client_id>", flush=True)
+                continue
+            ws = server.conns.get(tid)
+            if ws is None:
+                print(f"no client {tid}", flush=True)
+            else:
+                try:
+                    await ws.close(1000, "kicked by operator")
+                except Exception as exc:
+                    print(f"kick failed: {exc}", flush=True)
+        else:
+            # bare line = broadcast as Server (like Godot ServerChatInput)
+            await server.broadcast_server_message(line)
+
+
 async def serve_forever(host: str, port: int) -> None:
     server = AgawanServer()
     asyncio.get_running_loop().create_task(server._tick_loop())
+    asyncio.get_running_loop().create_task(admin_console_loop(server))
     log.info("Agawan Python server on ws://%s:%d (tick %.0f Hz)", host, port, config.TICK_HZ)
     async with websockets.serve(server.handle, host, port, max_size=1000000):
         await asyncio.Future()
