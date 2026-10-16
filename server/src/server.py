@@ -121,21 +121,25 @@ class AgawanServer:
                                     await ws.send(make_payload("state", snap))
                                 except Exception:
                                     pass
-                # 2. lobby update -> only lobby sockets, on change only (no heartbeat)
+                # 2. lobby update -> only lobby sockets, on change only (no heartbeat),
+                # and only when there is something to report (rooms/queue/match).
+                # Fresh empty lobby connect = welcome only, then silent.
                 lobby_ids = [c for c in self.lobby if c in self.conns and c not in in_match]
                 if lobby_ids:
-                    lfp = self._lobby_fingerprint()
-                    if lfp != self._last_lobby_fp:
-                        self._last_lobby_fp = lfp
-                        self._last_lobby_send = now
-                        snap = self._lobby_snapshot()
-                        for cid in lobby_ids:
-                            ws = self.conns.get(cid)
-                            if ws is not None:
-                                try:
-                                    await ws.send(make_payload("lobby_update", snap))
-                                except Exception:
-                                    pass
+                    snap_preview = self._lobby_snapshot()
+                    has_content = bool(snap_preview["rooms"]) or snap_preview["match_count"] > 0
+                    if has_content:
+                        lfp = self._lobby_fingerprint()
+                        if lfp != self._last_lobby_fp:
+                            self._last_lobby_fp = lfp
+                            self._last_lobby_send = now
+                            for cid in lobby_ids:
+                                ws = self.conns.get(cid)
+                                if ws is not None:
+                                    try:
+                                        await ws.send(make_payload("lobby_update", snap_preview))
+                                    except Exception:
+                                        pass
             except Exception as exc:
                 log.debug("tick broadcast failed: %s", exc)
 
@@ -148,12 +152,13 @@ class AgawanServer:
         log.info("client %d connected from %s (lobby)", client_id, peer)
         # Lobby hello only. No add_player here: user must explicitly
         # join/host a room (join_room) to enter a match and get state ticks.
+        # Quiet connect: welcome only, no forced lobby_update. Tick sends
+        # lobby_update only when there is something to report (rooms/queue).
         await self._send(ws, "welcome", {
             "client_id": client_id,
             "server_time": server_now(),
             "message": "Welcome to Agawan lobby",
         })
-        self._last_lobby_fp = None  # force lobby_update send
         try:
             async for message in ws:
                 await self.on_message(client_id, ws, message)
@@ -192,6 +197,7 @@ class AgawanServer:
             "tag_attempt": self._on_tag_attempt,
         }.get(name)
         if handler is None:
+            log.warning("unknown signal detected | signal: %s, data: %s", name, raw)
             await self._send(ws, "error", {"reason": f"unknown signal '{name}'"})
             return
         await handler(client_id, ws, raw)
@@ -206,9 +212,11 @@ class AgawanServer:
     async def _on_chat(self, client_id: int, ws, raw: dict) -> None:
         player = self.state.players.get(client_id)
         sender = str(raw.get("sender") or (player.name if player else f"Client {client_id}"))
+        message = str(raw.get("message", ""))
+        log.info("chat | client %d sender='%s': %s", client_id, sender, message)
         await self._broadcast("chat_message", {
             "sender": sender,
-            "message": str(raw.get("message", "")),
+            "message": message,
             "time": str(raw.get("time") or time.strftime("%H:%M:%S")),
         })
 
