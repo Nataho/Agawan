@@ -61,14 +61,18 @@ func _on_payload(signal_name: String, raw_data: Dictionary) -> void:
 				_report_and_quit(1, "WRONG PONG SOURCE: '%s'" % reply)
 				return
 			client.send_signal_to_server("chat_message", {"sender": "GodotHeadless", "message": "headless hello", "time": Time.get_time_string_from_system()})
-			print("[GODOT-TEST] sent chat_message")
+			print("[GODOT-TEST] sent chat_message (Option A: NO self-echo expected)")
+			# Continue without waiting for echo - server excludes sender.
+			step = 4
+			client.send_signal_to_server("exit_base", {})
+			print("[GODOT-TEST] sent exit_base")
 		"chat_message":
-			# broadcast echo of our own chat
+			# Option A: sender is excluded from broadcast; any chat frame
+			# here would be from another client (not in this single-client
+			# test), so mark informational only.
 			if str(raw_data.get("message", "")) == "headless hello":
 				got_chat_echo = true
-				step = 4
-				client.send_signal_to_server("exit_base", {})
-				print("[GODOT-TEST] sent exit_base")
+				print("[GODOT-TEST] (unexpected self-echo on Option A!)")
 		"freshness":
 			step = 5
 			_report_and_quit(0, "ALL CHECKS PASSED")

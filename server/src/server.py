@@ -214,11 +214,13 @@ class AgawanServer:
         sender = str(raw.get("sender") or (player.name if player else f"Client {client_id}"))
         message = str(raw.get("message", ""))
         log.info("chat | client %d sender='%s': %s", client_id, sender, message)
+        # Option A: sender already sees local [You] in NetworkTest UI,
+        # so exclude them from broadcast. Others still receive [sender]: msg.
         await self._broadcast("chat_message", {
             "sender": sender,
             "message": message,
             "time": str(raw.get("time") or time.strftime("%H:%M:%S")),
-        })
+        }, exclude=client_id)
 
     async def _on_join(self, client_id: int, ws, raw: dict) -> None:
         # Lobby-first: socket must be in lobby; join moves it into the match.
