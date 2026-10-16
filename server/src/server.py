@@ -176,6 +176,16 @@ class AgawanServer:
                 self._last_lobby_fp = None
             log.info("client %d disconnected", client_id)
 
+    # Single source of truth: adding a handler here auto-updates the
+    # unknown-signal hint. Frontend can check this list before wondering.
+    HANDLERS = {
+        "ping": "_on_ping",
+        "chat_message": "_on_chat",
+        "join": "_on_join",
+        "exit_base": "_on_exit_base",
+        "tag_attempt": "_on_tag_attempt",
+    }
+
     async def on_message(self, client_id: int, ws, message) -> None:
         try:
             data = json.loads(message)
@@ -189,18 +199,24 @@ class AgawanServer:
         raw = data.get("raw_data", {})
         if not isinstance(raw, dict):
             raw = {}
-        handler = {
-            "ping": self._on_ping,
-            "chat_message": self._on_chat,
-            "join": self._on_join,
-            "exit_base": self._on_exit_base,
-            "tag_attempt": self._on_tag_attempt,
-        }.get(name)
-        if handler is None:
-            log.warning("unknown signal detected | signal: %s, data: %s", name, raw)
-            await self._send(ws, "error", {"reason": f"unknown signal '{name}'"})
+        method_name = self.HANDLERS.get(name)
+        if method_name is None:
+            # Frontend shipped a signal (e.g. attack sync) the server does
+            # not implement yet. Fail loud both sides so nobody wastes time.
+            known = sorted(self.HANDLERS.keys())
+            log.warning(
+                "unknown signal detected | client %d | signal: %s, data: %s | "
+                "known signals: %s",
+                client_id, name, raw, ", ".join(known),
+            )
+            await self._send(ws, "unknown_signal", {
+                "signal": name,
+                "data": raw,
+                "known": known,
+                "reason": f"server has no handler for '{name}' yet",
+            })
             return
-        await handler(client_id, ws, raw)
+        await getattr(self, method_name)(client_id, ws, raw)
 
     async def _on_ping(self, client_id: int, ws, raw: dict) -> None:
         await self._send(ws, "pong", {
