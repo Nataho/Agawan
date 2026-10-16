@@ -44,6 +44,9 @@ func _on_payload(signal_name: String, raw_data: Dictionary) -> void:
 	print("[GODOT-TEST] payload '%s' %s" % [signal_name, str(raw_data)])
 	match signal_name:
 		"welcome":
+			# Lobby hello ("Welcome to Agawan lobby") arrives on connect;
+			# match welcome arrives after join. Either way continue to ping.
+			# (_on_connected already sent join; lobby hello is informational.)
 			got_welcome = true
 			step = 2
 			client.send_signal_to_server("ping", {"timestamp": Time.get_ticks_msec(), "message": "Hello from Godot Headless!"})
@@ -70,7 +73,9 @@ func _on_payload(signal_name: String, raw_data: Dictionary) -> void:
 			step = 5
 			_report_and_quit(0, "ALL CHECKS PASSED")
 		"state":
-			pass  # 20Hz tick, ignore
+			pass  # match tick, ignore
+		"lobby_update":
+			pass  # lobby tick, ignore
 		_:
 			print("[GODOT-TEST] (ignoring '%s')" % signal_name)
 

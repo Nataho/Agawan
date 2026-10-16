@@ -25,8 +25,9 @@ Compatible with:
 | C→S | `ping` | `{timestamp, message}` | Server replies `pong` |
 | S→C | `pong` | `{reply, client_id}` | |
 | C→S / S→C | `chat_message` | `{sender, message, time}` | Server broadcasts to room |
-| C→S | `join` | `{name, team, role}` | Assigns `client_id`, default team/role |
-| S→C | `welcome` | `{client_id, server_time, message}` | Sent on join |
+| C→S | `join` | `{name, team, role}` | Lobby → match: registers player, leaves lobby |
+| S→C | `welcome` | `{client_id, server_time, message}` | Lobby hello on connect, match welcome on join |
+| S→C | `lobby_update` | `{lobby_count, lobby_ids, match_count, rooms}` | Lobby only, on change, no heartbeat |
 | S→C | `player_joined` | `{client_id, name, team, role}` | Broadcast, excluded sender |
 | S→C | `player_left` | `{client_id}` | Broadcast |
 | C→S | `exit_base` | `{}` | Locks `exit_timestamp = server_time()` |
