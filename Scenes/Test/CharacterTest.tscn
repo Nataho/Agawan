@@ -2,6 +2,8 @@
 
 [ext_resource type="Texture2D" uid="uid://dnnugccepn821" path="res://Assets/images/char/dummy.png" id="1_abt0r"]
 [ext_resource type="Script" uid="uid://cyi2f5g4xsomp" path="res://Scenes/Test/character_test.gd" id="1_npx60"]
+[ext_resource type="PackedScene" uid="uid://cwcae2ev3shmt" path="res://Classes/Entities/CharacterBase/Character.tscn" id="3_6yius"]
+[ext_resource type="Script" uid="uid://w4eebts3caf0" path="res://Classes/Controllers/PlayerController.gd" id="4_0p7vq"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_gkghf"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
@@ -14,6 +16,9 @@ sky_material = SubResource("ProceduralSkyMaterial_gkghf")
 background_mode = 2
 sky = SubResource("Sky_abt0r")
 glow_enabled = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0p7vq"]
+albedo_color = Color(0.2784314, 0.2509804, 0, 1)
 
 [sub_resource type="BoxMesh" id="BoxMesh_g4v7s"]
 size = Vector3(25, 1, 12)
@@ -861,6 +866,9 @@ animations = [{
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_yf5fn"]
 
+[sub_resource type="LabelSettings" id="LabelSettings_0p7vq"]
+font_size = 40
+
 [node name="CharacterTest" type="Node3D" unique_id=1275445324]
 script = ExtResource("1_npx60")
 
@@ -873,9 +881,12 @@ shadow_enabled = true
 
 [node name="Camera3D" type="Camera3D" parent="." unique_id=806793106]
 transform = Transform3D(1, 0, 0, 0, 0.8660254, 0.5, 0, -0.5, 0.8660254, 0, 5.73, 5)
+projection = 1
+size = 11.0
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=895947378]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -4.03)
+material_override = SubResource("StandardMaterial3D_0p7vq")
 mesh = SubResource("BoxMesh_g4v7s")
 
 [node name="StaticBody3D" type="StaticBody3D" parent="MeshInstance3D" unique_id=232599005]
@@ -885,6 +896,7 @@ shape = SubResource("BoxShape3D_g4v7s")
 
 [node name="Player" type="CharacterBody3D" parent="." unique_id=1753473834]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0.449)
+visible = false
 
 [node name="AnimatedSprite3D" type="AnimatedSprite3D" parent="Player" unique_id=2120697450]
 billboard = 1
@@ -914,3 +926,29 @@ mesh = SubResource("BoxMesh_yf5fn")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="RigidBody3D" unique_id=615301444]
 shape = SubResource("BoxShape3D_yf5fn")
+
+[node name="Character" parent="." unique_id=681770804 instance=ExtResource("3_6yius")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.0319018, -4.736018)
+
+[node name="PlayerController" type="Node" parent="." unique_id=1004478153 node_paths=PackedStringArray("character")]
+script = ExtResource("4_0p7vq")
+character = NodePath("../Character")
+metadata/_custom_type_script = "uid://w4eebts3caf0"
+
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1096220721]
+
+[node name="Control" type="Control" parent="CanvasLayer" unique_id=1640125211]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="stamina_label" type="Label" parent="CanvasLayer/Control" unique_id=651035128]
+unique_name_in_owner = true
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+text = "stamina: 0"
+label_settings = SubResource("LabelSettings_0p7vq")
