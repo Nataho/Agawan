@@ -2,9 +2,8 @@
 
 [ext_resource type="Texture2D" uid="uid://dnnugccepn821" path="res://Assets/images/char/dummy.png" id="1_abt0r"]
 [ext_resource type="Script" uid="uid://cyi2f5g4xsomp" path="res://Scenes/Test/character_test.gd" id="1_npx60"]
-[ext_resource type="PackedScene" uid="uid://cwcae2ev3shmt" path="res://Classes/Entities/CharacterBase/Character.tscn" id="3_6yius"]
+[ext_resource type="PackedScene" uid="uid://drujo2jbadray" path="res://Classes/Entities/Characters/Jonathan/Jonathan.tscn" id="3_l6mkt"]
 [ext_resource type="Script" uid="uid://w4eebts3caf0" path="res://Classes/Controllers/PlayerController.gd" id="4_0p7vq"]
-[ext_resource type="Script" uid="uid://d15pn5bq6t7r" path="res://Scenes/Test/energy_drink.gd" id="5_l6mkt"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_gkghf"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
@@ -928,12 +927,12 @@ mesh = SubResource("BoxMesh_yf5fn")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="RigidBody3D" unique_id=615301444]
 shape = SubResource("BoxShape3D_yf5fn")
 
-[node name="Character" parent="." unique_id=681770804 instance=ExtResource("3_6yius")]
+[node name="Jonathan" parent="." unique_id=681770804 instance=ExtResource("3_l6mkt")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.0319018, -4.736018)
 
 [node name="PlayerController" type="Node" parent="." unique_id=1004478153 node_paths=PackedStringArray("character")]
 script = ExtResource("4_0p7vq")
-character = NodePath("../Character")
+character = NodePath("../Jonathan")
 metadata/_custom_type_script = "uid://w4eebts3caf0"
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1096220721]
@@ -953,6 +952,3 @@ offset_right = 40.0
 offset_bottom = 23.0
 text = "stamina: 0"
 label_settings = SubResource("LabelSettings_0p7vq")
-
-[node name="EnergyDrink" type="Node" parent="." unique_id=1575948654]
-script = ExtResource("5_l6mkt")

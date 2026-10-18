@@ -10,7 +10,7 @@ extends Node3D
 var gravity: float = ProjectSettings.get_setting("physics/3d/default_gravity")
 var _last_direction_anim: String = "down"
 
-@onready var character: CharacterBase = $Character
+@onready var character: CharacterBase = $Jonathan
 
 func _ready() -> void:
 	if sprite:

@@ -154,7 +154,7 @@ func set_move_direction(dir: Vector3) -> void:
 
 	update_directional_animation(dir.x, dir.z)
 
-
+#ANIMATION HANDLER
 func update_directional_animation(input_x: float, input_z: float) -> void:
 	if not sprite:
 		return
@@ -182,7 +182,7 @@ func update_directional_animation(input_x: float, input_z: float) -> void:
 			if input_x < -0.1:
 				anim_name = "left"
 			elif input_x > 0.1:
-				anim_name = "right"
+				anim_name = "move_right"
 
 		if not anim_name.is_empty():
 			_last_direction_anim = anim_name
@@ -191,6 +191,7 @@ func update_directional_animation(input_x: float, input_z: float) -> void:
 			elif not sprite.is_playing():
 				sprite.play()
 	else:
+		sprite.play("default")
 		if sprite.is_playing():
 			sprite.pause()
 			sprite.frame = 0
