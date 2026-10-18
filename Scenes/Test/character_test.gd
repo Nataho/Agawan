@@ -15,6 +15,7 @@ var _last_direction_anim: String = "down"
 func _ready() -> void:
 	if sprite:
 		sprite.play("down")
+	
 
 func _process(delta: float) -> void:
 	stamina_label.text = "stamina: " + str(character.get_current_stamina())
