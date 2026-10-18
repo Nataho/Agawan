@@ -16,7 +16,6 @@ func _physics_process(_delta: float) -> void:
 	
 	character.set_move_direction(direction)
 
-
 func _unhandled_input(event: InputEvent) -> void:
 	# Handle Tap Dash
 	if event.is_action_pressed("dash") and character:
