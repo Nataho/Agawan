@@ -1,7 +1,7 @@
 extends Node3D
 
-@export var move_speed: float = 6.0
-@export var jump_velocity: float = 8.0
+@export var move_speed: float = 10.0
+#@export var jump_velocity: float = 8.0
 
 @onready var player: CharacterBody3D = $Player
 @onready var sprite: AnimatedSprite3D = $Player/AnimatedSprite3D
@@ -16,7 +16,6 @@ func _ready() -> void:
 	if sprite:
 		sprite.play("down")
 	
-
 func _process(delta: float) -> void:
 	stamina_label.text = "stamina: " + str(character.get_current_stamina())
 

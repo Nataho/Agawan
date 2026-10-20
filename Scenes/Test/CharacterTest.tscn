@@ -927,9 +927,6 @@ mesh = SubResource("BoxMesh_yf5fn")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="RigidBody3D" unique_id=615301444]
 shape = SubResource("BoxShape3D_yf5fn")
 
-[node name="Jonathan" parent="." unique_id=681770804 instance=ExtResource("3_l6mkt")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.0319018, -4.736018)
-
 [node name="PlayerController" type="Node" parent="." unique_id=1004478153 node_paths=PackedStringArray("character")]
 script = ExtResource("4_0p7vq")
 character = NodePath("../Jonathan")
@@ -952,3 +949,6 @@ offset_right = 40.0
 offset_bottom = 23.0
 text = "stamina: 0"
 label_settings = SubResource("LabelSettings_0p7vq")
+
+[node name="Jonathan" parent="." unique_id=681770804 instance=ExtResource("3_l6mkt")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.4557729, 1.6999999, -3.6266546)

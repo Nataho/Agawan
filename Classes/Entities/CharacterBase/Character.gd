@@ -12,7 +12,7 @@ extends CharacterBody3D
 var _player_effective_lvl: int = 1
 var level: int = 1
 var lvl_booster_bonus: int = 0
-var stamina_points: float = 0.0 
+@export var stamina_points: float = 0.0 
 
 var _max_stamina: float = 100.0
 var _current_stamina: float = _max_stamina
@@ -31,6 +31,7 @@ var stamina_regen_rate: float = 15.0 # Stamina recovered per second when idle
 
 # State Signals
 signal airborne_changed(is_airborne: bool)
+signal poison_ticked(damage: float) ## fired every poison_interval during poison (health system hooks here later)
 
 # State Tracking
 var is_sprinting: bool = false
@@ -43,16 +44,22 @@ var _dash_direction: Vector3 = Vector3.ZERO
 
 @export var airborne_control_multiplier: float = 0.7 # Air control factor for horizontal movement
 
-
 @onready var sprite: AnimatedSprite3D = get_node_or_null("AnimatedSprite3D")
 @onready var stamina_bar: StaminaBar = get_node_or_null("BarViewport/StaminaBar")
 @onready var bar_sprite_3d: Sprite3D = get_node_or_null("AnimatedSprite3D/BarSprite3D")
+
+# Status Effects (fed by ItemBase.collect, see Status.gd for the data)
+var active_status: StatusEffect = null
+var _stun_left: float = 0.0
+var _air_left: float = 0.0
+var _speed_left: float = 0.0
+var _poison_left: float = 0.0
+var _poison_tick: float = 0.0
 
 var _last_direction_anim: String = "down"
 
 func _ready() -> void:
 	_update_stamina_bar()
-
 
 func _update_stamina_bar() -> void:
 	if stamina_bar:
@@ -62,6 +69,7 @@ func _update_stamina_bar() -> void:
 
 func _physics_process(delta: float) -> void:
 	_calculate_stats()
+	_tick_status(delta)
 	_apply_gravity(delta)
 	_handle_dash(delta)
 	_handle_sprint_stamina(delta)
@@ -81,7 +89,7 @@ func trigger_burnout() -> void:
 
 
 func try_dash(dash_dir: Vector3 = Vector3.ZERO) -> bool:
-	if is_dashing or is_burned_out:
+	if is_stunned() or is_dashing or is_burned_out:
 		return false
 
 	var final_dash_cost: float = dash_base_cost * stamina_rate
@@ -119,6 +127,10 @@ func try_dash(dash_dir: Vector3 = Vector3.ZERO) -> bool:
 
 
 func set_sprinting(active: bool) -> void:
+	if is_stunned():
+		is_sprinting = false
+		return
+
 	if is_burned_out:
 		is_sprinting = false
 		return
@@ -136,12 +148,19 @@ func get_current_speed() -> float:
 		return base_movement_speed * dash_speed_multiplier
 	if is_sprinting and _current_stamina > 0.0:
 		return base_movement_speed * sprint_speed_multiplier
+	if _speed_left > 0.0 and active_status != null: # speed status
+		return base_movement_speed * active_status.speed_multiplier
 	return base_movement_speed
-
 
 func set_move_direction(dir: Vector3) -> void:
 	# During a fast dash, movement direction is driven by the dash
 	if is_dashing:
+		return
+
+	# Stunned: inputs are ignored and the body grinds to a stop
+	if is_stunned():
+		velocity.x = move_toward(velocity.x, 0.0, base_movement_speed)
+		velocity.z = move_toward(velocity.z, 0.0, base_movement_speed)
 		return
 
 	var move_speed := get_current_speed()
@@ -166,21 +185,21 @@ func update_directional_animation(input_x: float, input_z: float) -> void:
 
 		if input_z < -0.1: # UP
 			if input_x < -0.1:
-				anim_name = "up-left"
+				anim_name = "move_up_left"
 			elif input_x > 0.1:
-				anim_name = "up-right"
+				anim_name = "move_up_right"
 			else:
-				anim_name = "up"
+				anim_name = "move_up"
 		elif input_z > 0.1: # DOWN
 			if input_x < -0.1:
-				anim_name = "down-left"
+				anim_name = "move_down_left"
 			elif input_x > 0.1:
-				anim_name = "down-right"
+				anim_name = "move_down_right"
 			else:
-				anim_name = "down"
+				anim_name = "move_down"
 		else: # HORIZONTAL
 			if input_x < -0.1:
-				anim_name = "left"
+				anim_name = "move_left"
 			elif input_x > 0.1:
 				anim_name = "move_right"
 
@@ -206,6 +225,9 @@ func _calculate_stats() -> void:
 
 
 func _apply_gravity(delta: float) -> void:
+	if _air_left > 0.0: # air status: keep hovering until it runs out
+		velocity.y = 0.0
+		return
 	if not is_on_floor():
 		velocity += get_gravity() * delta
 
@@ -242,3 +264,46 @@ func _handle_stamina_regeneration(delta: float) -> void:
 
 func get_current_stamina() -> float:
 	return _current_stamina
+
+
+# --- Status Effects (fed by pickups, data lives in Status.gd) ---
+
+## Replaces whatever status is active. ItemBase passes status.duplicate()
+## so edits stay local to this character.
+func apply_status(effect: StatusEffect) -> void:
+	active_status = effect
+	_stun_left = effect.stun_time
+	_air_left = effect.air_time
+	_speed_left = effect.speed_duration
+	_poison_left = effect.poison_time
+	_poison_tick = float(effect.poison_interval)
+
+func is_stunned() -> bool:
+	return _stun_left > 0.0
+
+func clear_status() -> void:
+	active_status = null
+	_stun_left = 0.0
+	_air_left = 0.0
+	_speed_left = 0.0
+	_poison_left = 0.0
+
+func _tick_status(delta: float) -> void:
+	if active_status == null:
+		return
+
+	_stun_left = maxf(0.0, _stun_left - delta)
+	_air_left = maxf(0.0, _air_left - delta)
+	_speed_left = maxf(0.0, _speed_left - delta)
+
+	if _poison_left > 0.0: # damage per interval, ticks toward zero
+		_poison_left -= delta
+		_poison_tick -= delta
+		if _poison_tick <= 0.0:
+			_poison_tick += float(active_status.poison_interval)
+			poison_ticked.emit(active_status.poison_damage)
+
+	var all_expired: bool = _stun_left <= 0.0 and _air_left <= 0.0 \
+		and _speed_left <= 0.0 and _poison_left <= 0.0
+	if all_expired:
+		active_status = null
