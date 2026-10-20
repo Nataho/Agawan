@@ -2,7 +2,7 @@ extends Resource
 class_name StatusEffect
 #Author: Nataho
 
-@export var status_name = "generic status"
+@export var status_name: String = "generic status"
 @export var stun_time:float = 0.0 ## stun duration
 @export var air_time:float = 0.0 ## airborne duration
 
@@ -14,7 +14,7 @@ class_name StatusEffect
 @export var speed_multiplier:float = 0.0
 @export var speed_duration:float = 0.0
 
-func _init(status_name:String) -> void:
+func _init(status_name:String = "generic status") -> void:
 	self.status_name = status_name
 
 func create_from_dict(status_name:String, effects:Dictionary) -> StatusEffect:

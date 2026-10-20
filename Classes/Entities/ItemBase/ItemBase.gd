@@ -3,6 +3,10 @@ extends RigidBody3D
 @export_flags("test1", "test2", "test3")
 var selected_flags:int = 0
 
+## Shared status data for pickups. Collector code should duplicate() this
+## before handing it to a Character so the shared file is never mutated.
+@export var status: StatusEffect = preload("res://Classes/Entities/ItemBase/generic_status.tres")
+
 func _ready():
 	if selected_flags & 1: print("test1 selected")
 	if selected_flags & 2: print("test2 selected")
