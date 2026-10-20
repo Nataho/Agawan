@@ -2,6 +2,10 @@ extends Resource
 class_name StatusEffect
 #Author: Nataho
 
+## Generic status holder saved as a resource (.tres) so any item, node or
+## system can share the same data. Values follow the script defaults unless
+## overridden per resource instance.
+
 @export var status_name: String = "generic status"
 @export var stun_time:float = 0.0 ## stun duration
 @export var air_time:float = 0.0 ## airborne duration

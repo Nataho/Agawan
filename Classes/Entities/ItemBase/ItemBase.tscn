@@ -8,7 +8,7 @@
 
 [node name="ItemBase" type="RigidBody3D" unique_id=2020915426]
 script = ExtResource("1_bi0ud")
-selected_flags = 5
+status = null
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=726170004]
 shape = SubResource("SphereShape3D_g4v7s")

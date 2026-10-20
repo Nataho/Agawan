@@ -1,23 +1,20 @@
 extends RigidBody3D
-
-@export_flags("test1", "test2", "test3")
-var selected_flags:int = 0
-
+class_name ItemBase
 ## Shared status data for pickups. Collector code should duplicate() this
 ## before handing it to a Character so the shared file is never mutated.
 @export var status: StatusEffect = preload("res://Classes/Entities/ItemBase/generic_status.tres")
 
 func _ready():
-	if selected_flags & 1: print("test1 selected")
-	if selected_flags & 2: print("test2 selected")
-	if selected_flags & 3: print("test3 selected")
-	print(selected_flags)
+	# report contacts so the item can see a character walking into it
+	contact_monitor = true
+	max_contacts_reported = 1
+	body_entered.connect(_on_body_entered)
 
-## Called when the node enters the scene tree for the first time.
-#func _ready() -> void:
-	#pass # Replace with function body.
-#
-#
-## Called every frame. 'delta' is the elapsed time since the previous frame.
-#func _process(delta: float) -> void:
-	#pass
+func _on_body_entered(body: Node3D) -> void:
+	if body is CharacterBase:
+		collect(body)
+
+## Gives the character a copy of the status data, then removes the pickup.
+func collect(character: CharacterBase) -> void:
+	character.apply_status(status.duplicate())
+	queue_free()
