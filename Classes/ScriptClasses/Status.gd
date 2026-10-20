@@ -2,18 +2,17 @@ extends Resource
 class_name StatusEffect
 #Author: Nataho
 
-var status_name = "generic status"
-var stun_time:float = 0.0 ## stun duration
-var air_time:float = 0.0 ## airborne duration
+@export var status_name = "generic status"
+@export var stun_time:float = 0.0 ## stun duration
+@export var air_time:float = 0.0 ## airborne duration
 
-var poison_time:float = 0.0 
-var poison_interval:int =  1 ##in seconds
-var poison_damage:float = 0.0 ##damage per second
+@export var poison_time:float = 0.0 
+@export var poison_interval:int =  1 ##in seconds
+@export var poison_damage:float = 0.0 ##damage per second
 
 #both can work with fast and slow
-var speed_multiplier:float = 0.0
-var speed_duration:float = 0.0
-
+@export var speed_multiplier:float = 0.0
+@export var speed_duration:float = 0.0
 
 func _init(status_name:String) -> void:
 	self.status_name = status_name

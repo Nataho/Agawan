@@ -12,7 +12,7 @@ extends CharacterBody3D
 var _player_effective_lvl: int = 1
 var level: int = 1
 var lvl_booster_bonus: int = 0
-var stamina_points: float = 0.0 
+@export var stamina_points: float = 0.0 
 
 var _max_stamina: float = 100.0
 var _current_stamina: float = _max_stamina
@@ -43,7 +43,6 @@ var _dash_direction: Vector3 = Vector3.ZERO
 
 @export var airborne_control_multiplier: float = 0.7 # Air control factor for horizontal movement
 
-
 @onready var sprite: AnimatedSprite3D = get_node_or_null("AnimatedSprite3D")
 @onready var stamina_bar: StaminaBar = get_node_or_null("BarViewport/StaminaBar")
 @onready var bar_sprite_3d: Sprite3D = get_node_or_null("AnimatedSprite3D/BarSprite3D")
@@ -52,7 +51,6 @@ var _last_direction_anim: String = "down"
 
 func _ready() -> void:
 	_update_stamina_bar()
-
 
 func _update_stamina_bar() -> void:
 	if stamina_bar:
@@ -138,7 +136,6 @@ func get_current_speed() -> float:
 		return base_movement_speed * sprint_speed_multiplier
 	return base_movement_speed
 
-
 func set_move_direction(dir: Vector3) -> void:
 	# During a fast dash, movement direction is driven by the dash
 	if is_dashing:
@@ -166,21 +163,21 @@ func update_directional_animation(input_x: float, input_z: float) -> void:
 
 		if input_z < -0.1: # UP
 			if input_x < -0.1:
-				anim_name = "up-left"
+				anim_name = "move_up_left"
 			elif input_x > 0.1:
-				anim_name = "up-right"
+				anim_name = "move_up_right"
 			else:
-				anim_name = "up"
+				anim_name = "move_up"
 		elif input_z > 0.1: # DOWN
 			if input_x < -0.1:
-				anim_name = "down-left"
+				anim_name = "move_down_left"
 			elif input_x > 0.1:
-				anim_name = "down-right"
+				anim_name = "move_down_right"
 			else:
-				anim_name = "down"
+				anim_name = "move_down"
 		else: # HORIZONTAL
 			if input_x < -0.1:
-				anim_name = "left"
+				anim_name = "move_left"
 			elif input_x > 0.1:
 				anim_name = "move_right"
 

@@ -1,0 +1,17 @@
+[gd_scene format=3 uid="uid://cbmv3ijshijaw"]
+
+[ext_resource type="Script" uid="uid://7fq0qrmcssrm" path="res://Classes/Entities/ItemBase/ItemBase.gd" id="1_bi0ud"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_g4v7s"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_g4v7s"]
+
+[node name="ItemBase" type="RigidBody3D" unique_id=2020915426]
+script = ExtResource("1_bi0ud")
+selected_flags = 5
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=726170004]
+shape = SubResource("SphereShape3D_g4v7s")
+
+[node name="AnimatedSprite3D" type="AnimatedSprite3D" parent="." unique_id=1635113118]
+sprite_frames = SubResource("SpriteFrames_g4v7s")
